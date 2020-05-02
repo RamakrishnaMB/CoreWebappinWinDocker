@@ -25,4 +25,3 @@ steps:
     repository: corewebappinwindocker
     Dockerfile: Dockerfile
     tags: newestdockerimg
-
