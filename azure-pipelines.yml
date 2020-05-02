@@ -9,27 +9,20 @@ trigger:
 pool:
   vmImage: "windows-latest"
 
-variables:
-  imageName: 'ramakrishnambdocker/CoreWebappinWinDocker:$(build.buildNumber)'
-
 steps:
-- task: Docker@1
-  displayName: 'Build an image'
+- task: CopyFiles@2
+  displayName: 'Copy Files to: $(Build.ArtifactStagingDirectory)'
   inputs:
-    command: Build an image
-    containerregistrytype: 'Container Registry'
-    dockerRegistryEndpoint: DockerRegistryRK
-    dockerFile: Dockerfile
-    imageName: $(imageName)
-    restartPolicy: always
+    TargetFolder: '$(Build.ArtifactStagingDirectory)'
+
+- task: PublishBuildArtifacts@1
+  displayName: 'Publish Artifact: drop'
     
-    
-- task: Docker@1
-  displayName: 'Push an image'
+- task: Docker@2
+  displayName: buildAndPush
   inputs:
-    command: Push an image
-    containerregistrytype: 'Container Registry'
-    dockerRegistryEndpoint: DockerRegistryRK
-    dockerFile: Dockerfile
-    imageName: $(imageName)
-    restartPolicy: always
+    containerRegistry: 'Azure container registry Service connection'
+    repository: corewebappinwindocker
+    Dockerfile: Dockerfile
+    tags: newestdockerimg
+
